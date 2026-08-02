@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+  --color-char: #221a16;
+  --color-char-light: #2e2420;
+  --color-cream: #f6efe3;
+  --color-ember: #e2622b;
+  --color-ember-dark: #c14e1f;
+  --color-mustard: #e8b23d;
+  --color-basil: #3a4f3c;
+
+  --font-display: "Anton", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+body {
+  background-color: var(--color-char);
+  color: var(--color-cream);
+  font-family: var(--font-body);
+}
+
+/* Divisor estilo "canhoto de ticket" entre seções */
+.ticket-divider {
+  position: relative;
+  height: 2px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--color-cream) 0 10px,
+    transparent 10px 20px
+  );
+  opacity: 0.25;
+}
+
+/* Preço em estilo "quadro de menu" */
+.menu-price {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
