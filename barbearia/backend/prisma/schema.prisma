@@ -1,0 +1,81 @@
+// Schema do banco de dados - Sistema de Agendamento para Barbearia
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CLIENT
+  ADMIN
+}
+
+enum AppointmentStatus {
+  CONFIRMED
+  CANCELED
+  COMPLETED
+  NO_SHOW
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  phone        String?
+  passwordHash String
+  role         Role     @default(CLIENT)
+  createdAt    DateTime @default(now())
+
+  appointments Appointment[]
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  durationMin Int // duração do serviço em minutos
+  priceCents  Int // preço em centavos, evita problema de arredondamento
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  appointments Appointment[]
+}
+
+model WorkingHours {
+  id        String @id @default(uuid())
+  // 0 = domingo ... 6 = sábado
+  weekday   Int
+  startTime String // formato "HH:mm"
+  endTime   String // formato "HH:mm"
+
+  @@unique([weekday])
+}
+
+model BlockedSlot {
+  id        String   @id @default(uuid())
+  date      DateTime // dia do bloqueio
+  startTime String // "HH:mm"
+  endTime   String // "HH:mm"
+  reason    String?
+}
+
+model Appointment {
+  id        String            @id @default(uuid())
+  clientId  String
+  client    User              @relation(fields: [clientId], references: [id])
+  serviceId String
+  service   Service           @relation(fields: [serviceId], references: [id])
+  date      DateTime // data do agendamento (só a data)
+  startTime String // "HH:mm"
+  endTime   String // "HH:mm"
+  status    AppointmentStatus @default(CONFIRMED)
+  notes     String?
+  createdAt DateTime          @default(now())
+
+  @@index([date])
+  @@index([clientId])
+}
